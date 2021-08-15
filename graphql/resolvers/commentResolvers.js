@@ -21,13 +21,16 @@ module.exports = {
             if (post) {      
                 console.log(post)  
                 post.comments.unshift({
-                body,
-                userName:user.userName,
+                body,                
+                postBy:user.id,
                 createdAt: new Date().toISOString()
                 });
                 await post.save();
-                return post;
+                const postNew = await Post.findById(postId).populate("postBy").populate('comments.postBy');
+                return postNew;
             } else throw new UserInputError('Post not found');
+
+            
         },
 
         async deleteComment(_, { postId, commentId }, context) {

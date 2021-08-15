@@ -6,7 +6,8 @@ module.exports = {
     Query:{
         async getPosts(){
             try {
-                const posts = await Post.find();
+                const posts = await Post.find().populate("postBy").populate('comments.postBy');
+                console.log(posts);
                 return posts;
             } catch (err) {
                 throw  new Error(err);
@@ -16,15 +17,17 @@ module.exports = {
     Mutation:{
         async createPost(_,{body},context){
             const user = await checkAuth(context);
+            //console.log(user);
             const newPost = new Post({
                 body,
-                user:user.id,
-                userName:user.userName,
-                userEmail:user.email,
+                postBy:user.id,                
                 createdAt: new Date().toISOString()
             })
-            const post = newPost.save();
-            return post;
+            const post = await newPost.save();
+            const postNew = await Post.findById(post.id).populate("postBy").populate('comments.postedBy');
+            console.log(post);
+            console.log(postNew);
+            return postNew;
             
         },
 
@@ -33,9 +36,9 @@ module.exports = {
         
             try {
               const post = await Post.findById(postId);
-              console.log(post.user);
-              console.log(user);
-              if (user.email === post.userEmail) {
+              console.log(user.id);
+              console.log(post.postBy);
+              if (user.id == post.postBy) {
                 //await post.delete();
                 return 'Post deleted successfully';
               } else {
@@ -52,19 +55,20 @@ module.exports = {
         
             const post = await Post.findById(postId);
             if (post) {
-              if (post.likes.find((like) => like.username === user.username)) {
+              if (post.likes.find((like) => like.user == user.id)) {
                 // Post already likes, unlike it
-                post.likes = post.likes.filter((like) => like.username !== user.username);
+                post.likes = post.likes.filter((like) => like.user != user.id);
               } else {
                 // Not liked, like post
                 post.likes.push({
-                  username:user.username,
+                  user:user.id,
                   createdAt: new Date().toISOString()
                 });
               }
         
               await post.save();
-              return post;
+              const postNew = await Post.findById(post.id).populate('likes.user');
+              return postNew;
             } else throw new UserInputError('Post not found');
           }
     }

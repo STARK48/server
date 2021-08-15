@@ -9,6 +9,7 @@ const  generateToken = (user) => {
   return (
     jwt.sign(
       {
+    id:user._id,
     userName:user.userName,            
     email:user.email,
     isOperator:user.isOperator
@@ -38,6 +39,7 @@ module.exports ={
             throw new UserInputError('Wrong credentials',{errors})
           }
 
+          console.log(user);
           const token = generateToken(user);
 
           return {

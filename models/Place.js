@@ -1,18 +1,24 @@
-const {model,Schema} = require('mongoose');
+const {model,Schema}= require('mongoose');
 
+const placeSchema = new Schema({
+    placeName:String,
+    about:String,
+    category:{
+        type:Schema.Types.ObjectId,
+        ref:'CategorySite'
+    },
+    coverImage:String,    
+    photos:[],
+    likes:[{        
+        user:{
+        type:Schema.Types.ObjectId,
+        ref:'User'
+            },
+        createdAt:String,
+    }
+    ],
+    createdAt:String
+});
 
-const placeSchema = new Schema({        
-        placename:String,
-        description:String,
-        categoryId:String,
-        categoryName:String,
-        categoryIcon:String,
-        userId:String,
-        userName:String,
-        region:String,
-        coverImage:String,
-        photos:Array,
-        createdAt:Date
-})
 
 module.exports = model('Place',placeSchema);

@@ -6,28 +6,7 @@ const userSchema = new Schema ({
     password:String,    
     email:String,
     isOperator:Boolean,
-    createdAt:Date,
-     profileImage:String,
-     about:String,
-    // phone:String,
-    // whatsapp:String,
-    // facebook:String,
-    // instagram:String,
-    // web:String, 
-    // address:String,   
-    // category:String,
-    // categoryIcon:String,
-    // operatorValue:Number,
-    // language:Array,    
-    // photos:Array,
-    // sites:Array,  
-
-    // place:{
-    //     type:Schema.Types.ObjectId,
-    //     ref:'places'
-    // }
-    
-
+    createdAt:String  
     })
 
     module.exports = model('User',userSchema);
